@@ -1,0 +1,97 @@
+# canvas
+关于canvas的知识
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>多个球碰撞</title>
+</head>
+<style>
+    #can{
+        box-shadow: 1px 2px 3px 3px chartreuse;
+    }
+</style>
+<body>
+<canvas id="can" width="600" height="600"></canvas>
+<script>
+// iowqjieow
+    var can=document.getElementById('can');
+    var ctx=can.getContext('2d');
+
+//    随机数
+    function rand(min,max) {
+        return parseInt(Math.random()*(max-min)+min)
+    }
+
+//    构造函数创建球
+    function Ball() {
+//        属性
+        this.x=rand(30,570);
+        this.y=rand(30,570);
+        this.r=rand(10,30);
+        this.color='rgb('+rand(0,255)+','+rand(0,255)+','+rand(0,255)+')';
+
+//        改变初始球的方向
+//        随机选方向
+        var dir=rand(0,2);
+        if(dir){
+            this.dir=1;
+        }else{
+            this.dir=-1;
+        }
+
+//        速度随机+方向随机
+        this.speedx=rand(2,6)*this.dir;
+        this.speedy=rand(2,6)*this.dir;
+
+//        方法——绘制球
+        this.draw=function () {
+            ctx.beginPath();
+            ctx.fillStyle=this.color;
+            ctx.arc(this.x,this.y,this.r,0,Math.PI*2,false);
+            ctx.fill();
+        }
+
+//        球动
+        this.move=function () {
+//            限制球的运动范围
+            if(this.x-this.r<0||this.x+this.r>can.width){
+                this.speedx*=-1;
+
+            }
+            if(this.y-this.r<0||this.y+this.r>can.height){
+                this.speedy*=-1;
+            }
+//            球动
+            this.x+=this.speedx;
+            this.y+=this.speedy;
+        }
+    }
+
+    //    实例化
+//    定义一个空数组存放生成的小球
+    var arr=[];
+    for(var i=0;i<100;i++){
+        var ball=new Ball(i);
+        arr.push(ball);
+    }
+
+//    使球在画布中运动
+    function animate() {
+//        清除画布
+        ctx.clearRect(0,0,can.width,can.height);
+        for(var i=0;i<100;i++){
+//            在画布中添加球
+            arr[i].draw();
+//            使添加的球运动起来
+            arr[i].move();
+        }
+//        开始动画
+        window.requestAnimationFrame(animate);
+    }
+//    调用
+    animate();
+
+</script>
+</body>
+</html>
